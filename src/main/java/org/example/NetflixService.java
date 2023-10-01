@@ -2,48 +2,135 @@ package org.example;
 
 import java.util.ArrayList;
 
-class NetflixService {
-    /*
-     *The NetflixService should have an Arraylist of users, tv shows and movies.
-     *The NetflixService should have a User object which represents current user.
-     */
+class NetflixService implements searchAndShow_Interface {
+    private static ArrayList<User> users = new ArrayList<>();
+    public static ArrayList<TVShow> tvShows = new ArrayList<>();
+    private User currentUser;
 
-    public void addTVShow(TVShow tvShow){
-        // Implement add tv show logic here
+    //Constructors
+    public NetflixService(User currentUser) {
+        this.currentUser = currentUser;
     }
 
-    public void addMovie(Movie movie){
-        // Implement add movie logic here
+    //Getters and Setters
+    public static TVShow getASingleTVShow(String Title) {
+        for (TVShow tvShow : tvShows) {
+            if (tvShow.getTitle().equalsIgnoreCase(Title)) {
+//                System.out.println("BANG");;
+                return tvShow;
+            }
+        }
+        return null;
     }
 
-    public void createAccount(String username, String password) {
-        // Implement create account logic here
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+    //Overriding
+    @Override
+    public void showList(ArrayList<TVShow> list) {
+        if (list != null) {
+            for (TVShow tvShow : list) {
+                System.out.println(tvShow.toString());
+            }
+
+        } else {
+            System.out.println("NOTHING FOUND TO SHOW");
+        }
+        System.out.println();
+    }
+
+    @Override
+    public boolean doesTVShowExist(String title) {
+        for (TVShow tvShow : tvShows) {
+            if (tvShow.getTitle().equalsIgnoreCase(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Service - Related Functions
+
+    public static boolean doesUserExist(String username) {
+        for (User user : users) {
+            if (user.getUserName().equalsIgnoreCase(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean createAccount(String username, String password) {
+        if (!doesUserExist(username)) {
+            User newUser = new User(username, password);
+            users.add(newUser);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean login(String username, String password) {
-        // Implement login logic here
+        for (User user : users) {
+            if (user.getUserName().equalsIgnoreCase(username) && user.getPassWord().equals(password)) {
+                setCurrentUser(user);
+                return true;
+            }
+        }
         return false;
     }
 
     public void logout() {
-        // Implement logout logic here
+//        System.out.println("User " + this.currentUser.getUserName() + " Successfully Logged Out!");
+        this.currentUser = null;
     }
 
     public ArrayList<TVShow> searchByTitle(String title) {
-        // Implement search by title logic here
+        ArrayList<TVShow> list = new ArrayList<>();
+
+        for (TVShow tvShow : tvShows) {
+            if (tvShow.getTitle().equalsIgnoreCase(title)) {
+                list.add(tvShow);
+            }
+        }
+        if (list.size() != 0) {
+            return list;
+        }
         return null;
     }
 
     public ArrayList<TVShow> searchByGenre(String genre) {
-        // Implement search by genre logic here
+        ArrayList<TVShow> list = new ArrayList<>();
+
+        for (TVShow tvShow : tvShows) {
+            if (tvShow.getGenre().equalsIgnoreCase(genre)) {
+                list.add(tvShow);
+            }
+        }
+        if (list.size() != 0) {
+            return list;
+        }
         return null;
     }
 
     public ArrayList<TVShow> searchByReleaseYear(int year) {
-        // Implement search by release year logic here
+        ArrayList<TVShow> list = new ArrayList<>();
+
+        for (TVShow tvShow : tvShows) {
+            if (tvShow.getReleaseYear() == year) {
+                list.add(tvShow);
+            }
+        }
+        if (list.size() != 0) {
+            return list;
+        }
         return null;
     }
-
-
 }
 
